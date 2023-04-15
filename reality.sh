@@ -59,7 +59,7 @@ install_base(){
 install_singbox(){
     install_base
 
-    last_version=$(curl -s https://data.jsdelivr.com/v1/package/gh/SagerNet/sing-box | sed -n 4p | tr -d ',"' | awk '{print $1}')
+    lastversion=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | grep "tagname" | awk '{print $2}' | tr -d ',"v')
     if [[ -z $last_version ]]; then
         red "获取版本信息失败，请检查VPS的网络状态！"
         exit 1
@@ -189,7 +189,7 @@ EOF
     mkdir /root/sing-box >/dev/null 2>&1
 
     # 生成 vless 分享链接及 Clash Meta 配置文件
-    share_link="vless://$UUID@$IP:$port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$dest_server&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Misaka-Reality"
+    share_link="vless://$UUID@$IP:$port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$dest_server&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Reality"
     echo ${share_link} > /root/sing-box/share-link.txt
     cat << EOF > /root/sing-box/clash-meta.yaml
 mixed-port: 7890
@@ -209,7 +209,7 @@ dns:
     - 114.114.114.114
 
 proxies:
-  - name: Misaka-Reality
+  - name: Reality
     type: vless
     server: $IP
     port: $port
@@ -229,7 +229,7 @@ proxy-groups:
   - name: Proxy
     type: select
     proxies:
-      - Misaka-Reality
+      - Reality
       
 rules:
   - GEOIP,CN,DIRECT
@@ -333,13 +333,6 @@ menu(){
     clear
     echo "#############################################################"
     echo -e "#               ${RED}Sing-box Reality 一键安装脚本${PLAIN}               #"
-    echo -e "# ${GREEN}作者${PLAIN}: MisakaNo の 小破站                                  #"
-    echo -e "# ${GREEN}博客${PLAIN}: https://blog.misaka.rest                            #"
-    echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/Misaka-blog               #"
-    echo -e "# ${GREEN}GitLab 项目${PLAIN}: https://gitlab.com/Misaka-blog               #"
-    echo -e "# ${GREEN}Telegram 频道${PLAIN}: https://t.me/misakanocchannel              #"
-    echo -e "# ${GREEN}Telegram 群组${PLAIN}: https://t.me/misakanoc                     #"
-    echo -e "# ${GREEN}YouTube 频道${PLAIN}: https://www.youtube.com/@misaka-blog        #"
     echo "#############################################################"
     echo ""
     echo -e " ${GREEN}1.${PLAIN} 安装 Sing-box Reality"
